@@ -1,16 +1,20 @@
 import { test, expect } from '@playwright/test';
 
-test('hounds', async ({ page }) => {
-  console.log('before route');
-  await page.route('https://dog.ceo/api/breeds/list/all', async route => {
-    console.log('inside route')
-    const json = {
-      message: { 'hounds': ['redbone'] }
-    };
-    await route.fulfill({ json });
-  });
+import { server } from '../mocks/server';
 
-  console.log('after route');
+test.beforeAll(async () => {
+  server.listen({ onUnhandledRequest: 'error'});
+  server.printHandlers();
+});
+
+test.afterAll(async () => {
+  server.close();
+});
+
+test('hounds', async ({ page }) => {
+  // print handlers
+  // should see the handler for the dog.ceo api
+  server.printHandlers();
   
   await page.goto('http://localhost:3000/hounds');
 
