@@ -1,51 +1,5 @@
-# Welcome to Remix!
+This is a quick example app to reproduce some issues I've been having with testing Remix apps with Playwright, specifically mocking apis with `page.route`
 
-- [Remix Docs](https://remix.run/docs)
+The page under test is the `/hounds` route (`app/routes/hounds.tsx`), which fetches and displays a list of hound breeds from the dog.ceo api. 
 
-## Development
-
-Start the Remix development asset server and the Express server by running:
-
-```sh
-npm run dev
-```
-
-This starts your app in development mode, which will purge the server require cache when Remix rebuilds assets so you don't need a process manager restarting the express server.
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying express applications you should be right at home just make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
-
-```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
-```
+In the test file (`tests/hounds.spec.ts`) I attempt to mock the api with `page.route` as in the [documentation](https://playwright.dev/docs/mock#mock-api-requests), but it does not appear to work. When I run the test (`npx playwright test hounds.spec.ts`) it fails and I don't see the log inside the `page.route` callback, and in the debugger (`npx playwright test hounds.spec.ts --debug) I can see that the actual data from the real api is still being fetched.
